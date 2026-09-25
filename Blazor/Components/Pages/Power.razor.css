@@ -1,0 +1,15 @@
+.power, .power > div
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#power-result {
+    font-size: 32px;
+}
+
+input[type=number].form-control {
+    width: 128px;
+}

@@ -1,0 +1,15 @@
+﻿@page "/power"
+@rendermode InteractiveServer
+
+<h3>Power</h3>
+
+<div class="power">
+    <div>
+        <label for="number">Число возводимое в степень:</label>
+        <input type="number" placeholder="Число" @bind="number" />
+        <label for="number">Степень для возведения:</label>
+        <input type="number" placeholder="Степень" @bind="exponent" />
+        <button @onclick="Calculate">Вычислить</button>
+    </div>
+    <div id="power-result">@result</div>
+</div>
