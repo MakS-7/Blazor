@@ -1,0 +1,56 @@
+﻿@page "/fibonacci"
+@rendermode InteractiveServer
+
+@using System.Numerics
+
+<div class="card">
+    <div class="card-header">Числа Фибоначчи</div>
+    <div class="card-body">
+        <div class="mb-3">
+            <label for="limit" class="form-label">Предел</label>
+            <input id="limit" @bind="InputLimit" @bind:event="oninput" class="form-control" />
+        </div>
+        <button class="btn btn-primary" @onclick="Generate">Показать</button>
+    </div>
+</div>
+
+@if (Numbers.Any())
+{
+    <ul class="list-group list-group-numbered mt-3">
+        @foreach (var number in Numbers)
+        {
+            <li class="list-group-item">@number</li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted mt-3">Введите значение и нажмите «Показать».</p>
+}
+
+@code {
+    [Parameter] public long InitialLimit { get; set; } = 100;
+
+    private long InputLimit = 100;
+    private IEnumerable<long> Numbers = Enumerable.Empty<long>();
+
+    protected override void OnInitialized()
+    {
+        InputLimit = InitialLimit;
+        Generate();
+    }
+
+    private void Generate() => Numbers = GetFibonacci(InputLimit).ToList();
+
+    private static IEnumerable<long> GetFibonacci(long limit)
+    {
+        long a = 0, b = 1;
+        while (a <= limit)
+        {
+            yield return a;
+            long next = a + b;
+            a = b;
+            b = next;
+        }
+    }
+}
