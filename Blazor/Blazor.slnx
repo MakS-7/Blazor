@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../Converter/Converter.csproj" />
+  <Project Path="Blazor.csproj" />
+</Solution>

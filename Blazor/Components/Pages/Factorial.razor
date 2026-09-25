@@ -1,0 +1,17 @@
+﻿@page "/Factorial"
+@rendermode InteractiveServer
+
+<h3>Factorial</h3>
+
+<div class="factorial">
+    <div>
+        <label for="number">Число для вычисления Факториала:</label>
+        <input  type="number"
+                id="number"
+                @bind="number" @bind:after="Calculate"
+                class="form-control"/>
+        <button @onclick="Calculate" class="btn btn-primary">Вычислить</button>
+    </div>
+    <div id="factorial-result">@number! = @factorial</div>
+    
+</div>
