@@ -4,6 +4,7 @@
     {
         public string? Description { get; set; }
         public bool DONE { get; set; }
+        public DateTime CreateTime { get; set; }
 
         public override bool Equals(object? other)
         {
