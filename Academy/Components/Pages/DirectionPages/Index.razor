@@ -8,11 +8,13 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<div class="controls">
+    <h1>Направления обучения</h1>
 
-<p>
-    <a href="directions/create">Create New</a>
-</p>
+    <div>
+        <a href="directions/create" class="btn btn-primary">Добавить</a>
+    </div>
+</div>
 
 <QuickGrid Class="table" Items="context.Directions">
     <PropertyColumn Property="direction => direction.direction_name" />
