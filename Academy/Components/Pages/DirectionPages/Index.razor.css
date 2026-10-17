@@ -1,0 +1,17 @@
+/* CSS for Index component */
+.controls a {
+    margin: 8px 16px 0;
+}
+
+.controls select {
+    width: 48px;
+}
+
+::deep .direction-name
+{
+    width: 90%;
+}
+
+.grid-container {
+    height: 68vh;
+}
