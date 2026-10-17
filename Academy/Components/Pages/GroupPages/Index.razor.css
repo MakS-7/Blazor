@@ -1,0 +1,27 @@
+/* CSS for Index component */
+.controls a {
+    margin: 8px 16px 0;
+}
+
+.controls select {
+    width: 48px;
+}
+
+::deep .group-name
+{
+    width: 20%;
+}
+
+::deep .direction-name
+{
+    width: 40%;
+}
+
+::deep .start-time, .learning-days, start-date
+{
+    width: 10%;
+}
+
+.grid-container {
+    height: 68vh;
+}

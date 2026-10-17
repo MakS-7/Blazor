@@ -1,4 +1,5 @@
 @page "/groups"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
@@ -9,29 +10,65 @@
 <PageTitle>Index</PageTitle>
 
 <div class="controls">
-    <h1>Группы</h1>
+    <div>
+        <h1>Группы</h1>
+
+        <div>
+            <a href="groups/create" class="btn btn-primary">Добавить</a>
+        </div>
+    </div>
 
     <div>
-        <a href="groups/create" class="btn btn-primary">Добавить</a>
+        <label for="items-per-pages">Элементов на странице:</label>
+        <select id="items-per-pages" @bind="pagination.ItemsPerPage" class="form-control">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="13">13</option>
+        </select>
     </div>
 </div>
 
-<QuickGrid Class="table" Items="context.Groups.Include(g => g.Direction)">
-    <PropertyColumn Property="group => group.group_name" />
-    <PropertyColumn Property="group => group.Direction.direction_name" />
-    <PropertyColumn Property="group => group.learning_days" />
-    <PropertyColumn Property="group => group.start_time" />
-    <PropertyColumn Property="group => group.start_date" />
+<hr />
+<div class="search-panel">
+    <form action="/groups" data-enhance data-permanent>
+        <input type="search" name="groupNameFilter" />
+        <input type="submit" value="Search" />
+    </form>
+</div>
+<hr />
 
-    <TemplateColumn Context="group">
-        <a href="@($"groups/edit?group_id={group.group_id}")">Edit</a> |
-        <a href="@($"groups/details?group_id={group.group_id}")">Details</a> |
-        <a href="@($"groups/delete?group_id={group.group_id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<div>
+    <div class="grid-container">
+        <QuickGrid Class="table" Items="FilteredGroups.Include(g => g.Direction)" Pagination="pagination">
+            <PropertyColumn Class="group-name" Property="group => group.group_name" Sortable="true" />
+            <PropertyColumn Class="direction-name" Property="group => group.Direction.direction_name" Sortable="true" />
+            <PropertyColumn Class="start-time" Property="group => group.start_time" Sortable="true" />
+            <PropertyColumn Class="learning-days" Property="group => group.learning_days" Sortable="true" />
+            <PropertyColumn Class="start-date" Property="group => group.start_date" Sortable="true" />
+
+            <TemplateColumn Context="group">
+                <a href="@($"groups/edit?group_id={group.group_id}")">Edit</a> |
+                <a href="@($"groups/details?group_id={group.group_id}")">Details</a> |
+                <a href="@($"groups/delete?group_id={group.group_id}")">Delete</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination"></Paginator>
+</div>
 
 @code {
     private AcademyContext context = default!;
+
+    GridSort<Group> sortBy = GridSort<Group>.ByAscending(m => m.group_name);
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
+
+    [SupplyParameterFromQuery]
+    private string? groupNameFilter { get; set; }
+
+    private IQueryable<Group> FilteredGroups =>
+        context.Groups.Where(g => g.group_name!.Contains(groupNameFilter ?? string.Empty));
 
     protected override void OnInitialized()
     {
