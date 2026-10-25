@@ -1,4 +1,5 @@
 @page "/students"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
@@ -16,23 +17,29 @@
     </p>
 </div>
 
-<QuickGrid Class="table" Items="context.Students">
-    <PropertyColumn Property="student => student.last_name" />
-    <PropertyColumn Property="student => student.first_name" />
-    <PropertyColumn Property="student => student.middle_name" />
-    <PropertyColumn Property="student => student.birth_date" />
-    <PropertyColumn Property="student => student.group" />
+<QuickGrid Class="table" Items="context.Students.Include(s => s.Group).ThenInclude(g => g.Direction)">
+    @* <PropertyColumn Property="student => student.full_name" /> *@
+    <TemplateColumn Context="student" Title="Студент" Sortable="true" SortBy="sortBy">
+        <a href="@($"students/details?stud_id={student.stud_id}")">@student.full_name</a>
+    </TemplateColumn>
+    @* <PropertyColumn Property="student => student.first_name" />
+    <PropertyColumn Property="student => student.middle_name" /> *@
+    <PropertyColumn Property="student => student.birth_date" Sortable="true"/>
+    <PropertyColumn Property="student => student.Group.group_name" Sortable="true"/>
+    <PropertyColumn Property="student => student.Group.Direction.direction_name" />
     @* <PropertyColumn Property="student => student.email" />
     <PropertyColumn Property="student => student.phone" />
     <PropertyColumn Property="student => student.photo" /> *@
 
-    <TemplateColumn Context="student">
+    @* <TemplateColumn Context="student">
         <a href="@($"students/details?stud_id={student.stud_id}")">Details</a>
-    </TemplateColumn>
+    </TemplateColumn> *@
 </QuickGrid>
 
 @code {
     private AcademyContext context = default!;
+
+    GridSort<Student> sortBy = GridSort<Student>.ByAscending(s => s.last_name);
 
     protected override void OnInitialized()
     {
