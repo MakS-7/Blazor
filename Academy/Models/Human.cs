@@ -25,11 +25,13 @@ namespace Academy.Models
         [Required]
         [DisplayName("Дата рождения")]
         [Range(typeof(DateOnly), "1940-01-01", "2015-12-31")]
-        public DateOnly birth_name { get; set; }
+        public DateOnly birth_date { get; set; }
 
         
-        public string? email { get; set; }
-        public string? phone { get; set; }
+        public string? email { get; set; } // [EmailAddress] - сделает поле обязательным для заполнения (not null)
+
+        
+        public string? phone { get; set; } // [Phone] - сделает поле обязательным для заполнения (not null)
         public byte[]? photo { get; set; }
     }
 }
