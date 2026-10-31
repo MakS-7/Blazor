@@ -9,12 +9,12 @@
 
 ::deep .group-name
 {
-    width: 20%;
+    width: 15%;
 }
 
 ::deep .direction-name
 {
-    width: 40%;
+    width: 35%;
 }
 
 ::deep .start-time, .learning-days, start-date

@@ -1,4 +1,5 @@
 @page "/groups/details"
+@using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
 @inject IDbContextFactory<AcademyContext> DbFactory
@@ -33,6 +34,12 @@
             <dt class="col-sm-2">start_date</dt>
             <dd class="col-sm-10">@group.start_date</dd>
         </dl>
+        <QuickGrid Class="table" Items="FiltredStudents">
+            <TemplateColumn Class="full-name" Context="student" Title="Студент">
+                <a href="@($"students/details?stud_id={student.stud_id}")">@student.full_name</a>
+            </TemplateColumn>
+            <PropertyColumn Class="birth-date" Property="student => student.birth_date" />
+        </QuickGrid>
         <div>
             <a href="@($"/groups")">Back to List</a>
         </div>
@@ -40,14 +47,19 @@
 </div>
 
 @code {
+    private AcademyContext context = default!;
+
     private Group? group;
 
     [SupplyParameterFromQuery]
     private int group_id { get; set; }
 
+    private IQueryable<Student> FiltredStudents =>
+        context.Students.Where(s => s.Group.group_name!.Contains(group.group_name ?? string.Empty));
+
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
+        context = DbFactory.CreateDbContext();
         group = await context.Groups.FirstOrDefaultAsync(m => m.group_id == group_id);
 
         if (group is null)

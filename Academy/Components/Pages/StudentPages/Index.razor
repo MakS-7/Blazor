@@ -10,36 +10,71 @@
 <PageTitle>Index</PageTitle>
 
 <div class="controls">
-    <h1>Студенты</h1>
+    <div>
+        <h1>Студенты</h1>
 
-    <p>
-        <a href="students/create" class="btn btn-primary">Добавить</a>
-    </p>
+        <p>
+            <a href="students/create" class="btn btn-primary">Добавить</a>
+        </p>
+    </div>
+
+    <div>
+        <label for="items-per-pages">Элементов на странице:</label>
+        <select id="items-per-pages" @bind="pagination.ItemsPerPage" class="form-control">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="13">13</option>
+        </select>
+    </div>
 </div>
 
-<QuickGrid Class="table" Items="context.Students.Include(s => s.Group).ThenInclude(g => g.Direction)">
-    @* <PropertyColumn Property="student => student.full_name" /> *@
-    <TemplateColumn Context="student" Title="Студент" Sortable="true" SortBy="sortBy">
-        <a href="@($"students/details?stud_id={student.stud_id}")">@student.full_name</a>
-    </TemplateColumn>
-    @* <PropertyColumn Property="student => student.first_name" />
-    <PropertyColumn Property="student => student.middle_name" /> *@
-    <PropertyColumn Property="student => student.birth_date" Sortable="true"/>
-    <PropertyColumn Property="student => student.Group.group_name" Sortable="true"/>
-    <PropertyColumn Property="student => student.Group.Direction.direction_name" />
-    @* <PropertyColumn Property="student => student.email" />
-    <PropertyColumn Property="student => student.phone" />
-    <PropertyColumn Property="student => student.photo" /> *@
+<hr />
+<div class="search-panel">
+    <form action="/students" data-enhance data-permanent>
+        <input type="search" name="studentsFilter" />
+        <input type="submit" value="Search" />
+    </form>
+</div>
+<hr />
 
-    @* <TemplateColumn Context="student">
-        <a href="@($"students/details?stud_id={student.stud_id}")">Details</a>
-    </TemplateColumn> *@
-</QuickGrid>
+
+<div>
+    <div class="grid-container">
+        <QuickGrid Class="table" Items="FiltredStudents.Include(s => s.Group).ThenInclude(g => g.Direction)" Pagination="pagination">
+            @* <PropertyColumn Property="student => student.full_name" /> *@
+            <TemplateColumn Class="full-name" Context="student" Title="Студент" Sortable="true" SortBy="sortBy">
+                <a href="@($"students/details?stud_id={student.stud_id}")">@student.full_name</a>
+            </TemplateColumn>
+            @* <PropertyColumn Property="student => student.first_name" />
+            <PropertyColumn Property="student => student.middle_name" /> *@
+            <PropertyColumn Class="birth-date" Property="student => student.birth_date" Sortable="true" />
+            <PropertyColumn Class="group" Property="student => student.Group.group_name" Sortable="true" />
+            <PropertyColumn Class="direction-name" Property="student => student.Group.Direction.direction_name" />
+            @* <PropertyColumn Property="student => student.email" />
+            <PropertyColumn Property="student => student.phone" />
+            <PropertyColumn Property="student => student.photo" /> *@
+
+            @* <TemplateColumn Context="student">
+            <a href="@($"students/details?stud_id={student.stud_id}")">Details</a>
+            </TemplateColumn> *@
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination"></Paginator>
+</div>
 
 @code {
     private AcademyContext context = default!;
 
     GridSort<Student> sortBy = GridSort<Student>.ByAscending(s => s.last_name);
+    
+    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
+
+    [SupplyParameterFromQuery]
+    private string? studentsFilter { get; set; }
+
+    private IQueryable<Student> FiltredStudents =>
+        context.Students.Where(s => s.last_name!.Contains(studentsFilter ?? string.Empty) || s.first_name!.Contains(studentsFilter ?? string.Empty));
 
     protected override void OnInitialized()
     {
