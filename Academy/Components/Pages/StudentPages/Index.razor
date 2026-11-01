@@ -68,7 +68,7 @@
 
     GridSort<Student> sortBy = GridSort<Student>.ByAscending(s => s.last_name);
     
-    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 8 };
 
     [SupplyParameterFromQuery]
     private string? studentsFilter { get; set; }
