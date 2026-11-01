@@ -43,6 +43,7 @@
         <QuickGrid Class="table" Items="FiltredDirections" Pagination="pagination">
             <PropertyColumn Class="direction-name" Property="direction => direction.direction_name" Sortable="true"/>
             <PropertyColumn Property="direction => direction.Groups.Count" Sortable="true"/>
+            <PropertyColumn Property="direction => direction.Groups.Sum(g => g.Students.Count)" Sortable="true"/>
 
             <TemplateColumn Context="direction">
                 <a href="@($"directions/edit?direction_id={direction.direction_id}")">Edit</a> |

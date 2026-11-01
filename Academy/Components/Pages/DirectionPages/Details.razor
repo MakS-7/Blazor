@@ -23,6 +23,8 @@
         <dl class="row">
             <dt class="col-sm-2">Количество групп</dt>
             <dd class="col-sm-10">@direction.Groups.Count</dd>
+            <dt class="col-sm-2">Количество студентов</dt>
+            <dd class="col-sm-10">@studentsCount</dd>
         </dl>
         <QuickGrid Class="table" Items="FiltredGroups">
             <PropertyColumn Class="group-name" Title="Группы" Property="group => group.group_name" Sortable="true"/>
@@ -37,11 +39,13 @@
 
 @code {
     private AcademyContext context = default!;
-    
+
     private Direction? direction;
 
     [SupplyParameterFromQuery]
     private int direction_id { get; set; }
+
+    int studentsCount = 0;
 
     private IQueryable<Group> FiltredGroups =>
         context.Groups.Where(g => g.Direction.direction_name!.Contains(direction.direction_name ?? string.Empty));
@@ -50,6 +54,8 @@
     {
         context = DbFactory.CreateDbContext();
         direction = await context.Directions.Include(d => d.Groups).ThenInclude(g => g.Students).FirstOrDefaultAsync(m => m.direction_id == direction_id);
+
+        foreach (Group group in direction.Groups) studentsCount += group.Students.Count();
 
         if (direction is null)
         {
