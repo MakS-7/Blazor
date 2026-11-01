@@ -10,5 +10,7 @@ namespace Academy.Models
         [Column("direction_id", TypeName = "TINYINT")]
         public int direction_id { get; set; }
         public string direction_name { get; set; }
+
+        public ICollection<Group> Groups { get; set; }
     }
 }

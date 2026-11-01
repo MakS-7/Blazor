@@ -26,5 +26,7 @@ namespace Academy.Models
         public DateOnly? start_date { get; set; }
 
         public Direction Direction { get; set; }
+
+        public ICollection<Student> Students { get; set; }
     }
 }

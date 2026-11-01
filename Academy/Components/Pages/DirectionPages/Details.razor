@@ -1,4 +1,5 @@
 @page "/directions/details"
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
@@ -7,22 +8,25 @@
 
 <PageTitle>Details</PageTitle>
 
-<h1>Details</h1>
+@* <h1>Details</h1> *@
 
 <div>
-    <h2>Direction</h2>
-    <hr />
+    @* <h2>Direction</h2>
+    <hr /> *@
     @if (direction is null)
     {
         <p><em>Loading...</em></p>
     }
     else {
+        <h1>@direction.direction_name</h1>
+        <hr />
         <dl class="row">
-            <dt class="col-sm-2">direction_name</dt>
-            <dd class="col-sm-10">@direction.direction_name</dd>
+            <dt class="col-sm-2">Количество групп</dt>
+            <dd class="col-sm-10">@direction.Groups.Count</dd>
         </dl>
         <QuickGrid Class="table" Items="FiltredGroups">
-            <PropertyColumn Class="group-name" Property="group => group.group_name" />
+            <PropertyColumn Class="group-name" Title="Группы" Property="group => group.group_name" Sortable="true"/>
+            <PropertyColumn Title="Студентов в группе" Property="group => group.Students.Count" Sortable="true"/>
         </QuickGrid>
         <div>
             <a href="@($"/directions/edit?direction_id={direction.direction_id}")">Edit</a> |
@@ -45,7 +49,7 @@
     protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
-        direction = await context.Directions.FirstOrDefaultAsync(m => m.direction_id == direction_id);
+        direction = await context.Directions.Include(d => d.Groups).ThenInclude(g => g.Students).FirstOrDefaultAsync(m => m.direction_id == direction_id);
 
         if (direction is null)
         {
