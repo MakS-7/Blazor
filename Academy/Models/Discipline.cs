@@ -19,6 +19,6 @@ namespace Academy.Models
         public int number_of_lessons { get; set; }
 
 
-        public ICollection<Teacher> Teachers { get; set; }
+        //public ICollection<Teacher> Teachers { get; set; }
     }
 }
