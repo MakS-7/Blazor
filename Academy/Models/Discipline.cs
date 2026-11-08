@@ -18,7 +18,6 @@ namespace Academy.Models
         [Column(TypeName = "TINYINT")]
         public int number_of_lessons { get; set; }
 
-
-        //public ICollection<Teacher> Teachers { get; set; }
+        public ICollection<TeachersDisciplinesRelation>? TDR { get; set; }
     }
 }
