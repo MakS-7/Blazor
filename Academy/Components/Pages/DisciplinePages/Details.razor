@@ -16,7 +16,10 @@
         <p><em>Loading...</em></p>
     }
     else {
-        <h1>@discipline.discipline_name</h1>
+        <div class="controls">
+            <h1>@discipline.discipline_name</h1>
+            <a href="@($"/disciplines/edit?discipline_id={discipline.discipline_id}")" class="btn btn-primary">Edit</a>
+        </div>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">discipline_name</dt>
@@ -24,10 +27,13 @@
             <dt class="col-sm-2">number_of_lessons</dt>
             <dd class="col-sm-10">@discipline.number_of_lessons</dd>
         </dl>
-        <div>
-            <a href="@($"/disciplines/edit?discipline_id={discipline.discipline_id}")">Edit</a> |
-            <a href="@($"/disciplines")">Back to List</a>
-        </div>
+        <h3>Количество преподавателей: @discipline.TDR.Count</h3>
+        <ul>
+            @foreach (TeachersDisciplinesRelation tdr in discipline.TDR)
+            {
+                <li>@tdr.Teacher.full_name</li>
+            }
+        </ul>
     }
 </div>
 
@@ -41,7 +47,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        discipline = await context.Disciplines.Include(d => d.TDR).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
+        discipline = await context.Disciplines.Include(d => d.TDR).ThenInclude(tdr => tdr.Teacher).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
 
         if (discipline is null)
         {
